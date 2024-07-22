@@ -1,0 +1,22 @@
+{
+  "name": "dev-auth-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lipeflorentino/dev-auth-service.git"
+  },
+  "keywords": [
+    "microsservice"
+  ],
+  "author": "Filipe Lima",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lipeflorentino/dev-auth-service/issues"
+  },
+  "homepage": "https://github.com/lipeflorentino/dev-auth-service#readme",
+  "description": ""
+}
