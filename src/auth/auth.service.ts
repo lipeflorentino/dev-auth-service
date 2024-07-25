@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { Repository } from 'typeorm';
 import { Access } from './entities/access.entity';
@@ -9,13 +9,15 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+    private logger = new Logger('AuthService');
+
     constructor(
         @InjectRepository(Access) private accessRepository: Repository<Access>,
         private jwtService: JwtService,
     ) {}
 
     async createAccess(createAuthDto: CreateAuthDto): Promise<Access> {
-        console.log('Creating access', { createAuthDto });
+        this.logger.log('Creating access', { createAuthDto });
         const hashedPassword = await bcrypt.hash(createAuthDto.password, 10);
         const accessKey = uuidv4();
         const newAccess = this.accessRepository.create({
@@ -29,7 +31,7 @@ export class AuthService {
     }
 
     async authenticate({ email, password }: CreateAuthDto): Promise<string> {
-        console.log('Authenticating...', { email });
+        this.logger.log('Authenticating...', { email });
         let accessToken = null;
         const access = await this.accessRepository.findOneBy({ email });
 

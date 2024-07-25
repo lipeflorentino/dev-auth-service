@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
         TypeOrmModule.forRoot({
             type: 'mongodb',
             url: process.env.MONGO_URL,
+            //alterar para false em prod utilizar migrations
             synchronize: true,
             useUnifiedTopology: true,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],

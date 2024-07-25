@@ -5,18 +5,22 @@ import {
     HttpCode,
     HttpStatus,
     HttpException,
+    Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 
 @Controller('auth')
 export class AuthController {
+    private logger = new Logger('AuthController');
+
     constructor(private readonly authService: AuthService) {}
 
     @Post('create')
     @HttpCode(HttpStatus.CREATED)
     async createAccess(@Body() body: CreateAuthDto) {
-        console.log('Trying to create auth...', { body });
+        this.logger.log('Trying to create auth...', { body });
+
         try {
             const access = await this.authService.createAccess(body);
 
@@ -26,7 +30,7 @@ export class AuthController {
                 data: access,
             };
         } catch (error) {
-            console.log('Error', { error });
+            this.logger.error('Error', { error });
             throw new HttpException(error.response, error.status);
         }
     }
@@ -34,12 +38,14 @@ export class AuthController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     async authenticate(@Body() body: CreateAuthDto) {
-        console.log('Trying to authenticate...', { body });
+        this.logger.log('Trying to authenticate...', { body });
+
         try {
             const token = await this.authService.authenticate(body);
-            console.log('authenticated token', { token });
+
             if (!token) {
-                console.log('Invalid credentials!');
+                this.logger.log('Invalid credentials!');
+
                 throw new HttpException(
                     'Unauthorized',
                     HttpStatus.UNAUTHORIZED,
@@ -52,7 +58,7 @@ export class AuthController {
                 token,
             };
         } catch (error) {
-            console.log('Error', { error });
+            this.logger.error('Error', { error });
             throw new HttpException(error.response, error.status);
         }
     }
