@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
         AuthModule,
         TypeOrmModule.forRoot({
             type: 'mongodb',
-            url: 'mongodb://localhost:27017/authdb',
+            url: process.env.MONGO_URL,
             synchronize: true,
             useUnifiedTopology: true,
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        }),
+        ConfigModule.forRoot({
+            isGlobal: true,
         }),
     ],
     controllers: [],

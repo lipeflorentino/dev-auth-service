@@ -22,6 +22,7 @@ export class AuthService {
             email: createAuthDto.email,
             password: hashedPassword,
             accessKey,
+            accessType: createAuthDto.accessType,
         });
 
         return this.accessRepository.save(newAccess);
@@ -36,6 +37,7 @@ export class AuthService {
             const payload = {
                 email: access.email,
                 accessKey: access.accessKey,
+                accessType: access.accessType,
             };
 
             accessToken = await this.jwtService.signAsync(payload);

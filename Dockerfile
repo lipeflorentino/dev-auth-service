@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Expõe a porta que o aplicativo irá rodar
-EXPOSE 3000
+EXPOSE 3001
 
 # Define o comando para rodar a aplicação
 CMD ["node", "dist/main"]
