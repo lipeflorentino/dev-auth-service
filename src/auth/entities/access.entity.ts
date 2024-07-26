@@ -1,4 +1,4 @@
-import { Entity, ObjectIdColumn, Column } from 'typeorm';
+import { Entity, ObjectIdColumn, Column, Index, ObjectId } from 'typeorm';
 
 export enum AccessType {
     CUSTOMER = 'customer',
@@ -8,6 +8,10 @@ export enum AccessType {
 @Entity()
 export class Access {
     @ObjectIdColumn()
+    id: ObjectId;
+
+    @Column()
+    @Index({ unique: true })
     email: string;
 
     @Column()
