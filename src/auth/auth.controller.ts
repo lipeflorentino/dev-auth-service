@@ -6,6 +6,8 @@ import {
     HttpStatus,
     HttpException,
     Logger,
+    Req,
+    UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -37,11 +39,11 @@ export class AuthController {
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
-    async authenticate(@Body() body: CreateAuthDto) {
-        this.logger.log('Trying to authenticate...', { body });
+    async login(@Body() body: CreateAuthDto) {
+        this.logger.log('Trying to login...', { body });
 
         try {
-            const token = await this.authService.authenticate(body);
+            const token = await this.authService.login(body);
 
             if (!token) {
                 this.logger.log('Invalid credentials!');
@@ -60,6 +62,32 @@ export class AuthController {
         } catch (error) {
             this.logger.error('Error', { error });
             throw new HttpException(error.response, error.status);
+        }
+    }
+
+    @Post('validate')
+    @HttpCode(HttpStatus.OK)
+    async validateToken(@Req() req: Request) {
+        try {
+            const token = req.headers['authorization'];
+
+            const { isValid, apiKeyValid } =
+                await this.authService.validateTokenAndApiKey(token);
+
+            if (!isValid || !apiKeyValid) {
+                throw new UnauthorizedException('Invalid token or API key');
+            }
+
+            return {
+                statusCode: HttpStatus.OK,
+                message: 'Token and API key are valid',
+            };
+        } catch (error) {
+            this.logger.error('Error', { error });
+            throw new HttpException(
+                error.response.message || 'Internal Server Error',
+                error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+            );
         }
     }
 }
